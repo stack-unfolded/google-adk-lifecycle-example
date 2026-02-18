@@ -99,15 +99,21 @@ def create_calculator_agent() -> LlmAgent:
     ]
 
     # Get model configuration from environment variables
-    model_name = os.getenv("MODEL_NAME", "ollama/llama2")
-    base_url = os.getenv("BASE_URL", "http://localhost:11434")
+    # Groq API configuration
+    model_name = os.getenv("GROQ_MODEL", "groq/llama3-70b-8192")
+    api_key = os.getenv("GROQ_API_KEY")
+    base_url = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
 
-    # Create the LLM Agent with LiteLLM configuration for Ollama
+    if not api_key:
+        raise ValueError("GROQ_API_KEY not found in .env file. Please add your Groq API key.")
+
+    # Create the LLM Agent with LiteLLM configuration for Groq
     agent = LlmAgent(
         name="calculator_agent",
         model=LiteLlm(
             model=model_name,
             api_base=base_url,
+            api_key=api_key,
         ),
         tools=tools,
         instruction=(

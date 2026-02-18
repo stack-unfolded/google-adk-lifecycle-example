@@ -32,43 +32,42 @@ A simple calculator agent that can perform basic arithmetic operations (add, sub
 
 ## Prerequisites
 
-1. **Install Ollama** - Download from [ollama.com](https://ollama.com)
-2. **Pull a model** - Run `ollama pull llama3.2` (recommended for tool calling)
-3. **Start Ollama** - Run `ollama serve` (usually starts automatically)
+1. **Get a Groq API Key** - Sign up at [console.groq.com](https://console.groq.com)
+2. **Python 3.12+** - Required for Google ADK
+3. **uv package manager** - For running the project
 
-**Note on Model Selection:** For best tool calling support with Ollama, use models like:
-- `llama3.2` (recommended)
-- `llama3.1`
-- `mistral`
-- `qwen2.5`
+**Note on Model Selection:** Groq provides fast inference for various models. Based on testing, these models work well with tool calling:
+- `groq/qwen/qwen3-32b` (recommended - tested and working perfectly)
+- `groq/llama-3.1-8b-instant` (fast and efficient)
+- `groq/llama-3.1-70b-versatile` (high quality)
+- `groq/mixtral-8x7b-32768` (good performance)
 
-Some smaller models may have limited tool calling capabilities.
+**Note:** `groq/llama-3.3-70b-versatile` has tool calling format compatibility issues and is not recommended.
 
 ## Configuration
 
-Edit the `.env` file to configure your local model:
+Edit the `.env` file to configure your Groq API settings:
 
 ```env
-# The model name with ollama/ prefix (e.g., ollama/llama3.2, ollama/mistral)
-MODEL_NAME=ollama/llama3.2
+# Groq API base URL (OpenAI-compatible endpoint)
+GROQ_BASE_URL=https://api.groq.com/openai/v1
 
-# Ollama API base URL (default: http://localhost:11434)
-BASE_URL=http://localhost:11434
+# Your Groq API key from console.groq.com
+GROQ_API_KEY=your_groq_api_key_here
+
+# Model name (use groq/ prefix for LiteLLM)
+GROQ_MODEL=groq/qwen/qwen3-32b
 ```
 
 ## How to Run
 
 ```bash
-# Pull a recommended model (if not already installed)
-ollama pull llama3.2
+# 1. Get your Groq API key from https://console.groq.com
 
-# Make sure Ollama is running
-ollama list  # Verify your model is available
+# 2. Update .env with your API key
+# GROQ_API_KEY=your_actual_api_key_here
 
-# Update .env with your model name
-# MODEL_NAME=ollama/llama3.2
-
-# Run the lifecycle demonstration
+# 3. Run the lifecycle demonstration
 uv run main.py
 ```
 
@@ -102,23 +101,23 @@ Type `quit` or `exit` to end the session.
 
 If you see the agent responding but tools are not being called:
 
-1. **Check your model** - Some Ollama models have better tool calling support than others
-   - ✅ Recommended: `llama3.2`, `llama3.1`, `mistral`, `qwen2.5`
-   - ⚠️ Limited support: Smaller models like `qwen3:4b` may not work well
+1. **Check your model** - Groq models have excellent tool calling support
+   - ✅ Recommended: `groq/llama-3.3-70b-versatile`, `groq/llama-3.1-70b-versatile`
+   - Try switching models in `.env` if you encounter issues
 
-2. **Update your model**:
-   ```bash
-   ollama pull llama3.2
-   # Update .env: MODEL_NAME=ollama/llama3.2
-   ```
+2. **Test with a simple query**: Try "What is 5 + 12?" and see if the `add` tool is called
 
-3. **Test with a simple query**: Try "What is 5 + 12?" and see if the `add` tool is called
+### API Key errors
 
-### Agent returns empty responses
+- Make sure you've added your Groq API key to `.env`
+- Get your API key from [console.groq.com](https://console.groq.com)
+- Verify the key is correctly copied (no extra spaces)
 
-- Make sure Ollama is running: `ollama serve`
-- Verify the model is loaded: `ollama list`
-- Check the BASE_URL in `.env` matches your Ollama endpoint
+### Rate limiting
+
+- Groq has rate limits on the free tier
+- If you hit rate limits, wait a moment and try again
+- Consider upgrading your Groq plan for higher limits
 
 ## Learn More
 

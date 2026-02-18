@@ -12,11 +12,15 @@ Type your calculation queries and see the agent respond!
 """
 
 import asyncio
+import warnings
 from google.adk.runners import Runner
 from google.adk.sessions.in_memory_session_service import InMemorySessionService
 from google.genai import types
 
 from .calculator_agent import create_calculator_agent
+
+# Suppress Pydantic serialization warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 
 
 async def main():
